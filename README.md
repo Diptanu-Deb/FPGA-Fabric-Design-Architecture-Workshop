@@ -206,6 +206,92 @@ The snippet below shows a brief summary of the power analysis report generated b
 
 <img width="907" height="601" alt="image" src="https://github.com/user-attachments/assets/99c92ff5-1b14-4499-98ea-abd4332e1b1a" />
 
+# Day 3 - RISCV Core Programming Using Vivado  
+
+The RISC-V RTL consists of multiple blocks/modules like:
+
+1. Instruction memory  
+2. Data memory  
+3. ALU  
+4.I/O ports 
+The snippets below shows the behavioural simulation of the RVMYTH RISC-V core in vivado simulator. The instruction memory contains instructions for addition of integers from 1 to 9. The waveform displays the final sum.
+
+<img width="1297" height="795" alt="image" src="https://github.com/user-attachments/assets/b3fe4eb5-d95b-4081-9faa-27ba1b060c99" />
+
+
+The snippet below shows the elaboration stage where the FPGA pins are mapped to the RTL input/output ports.
+
+<img width="1005" height="776" alt="d3_elaborate_rvmyth (1)" src="https://github.com/user-attachments/assets/36085ef4-9962-4374-a4e8-4f53b9393c2b" />
+
+The design is synthesized in Vivado tool for Basys3 FPGA, along with some constraints. The below snippet show the schematic of design after synthesis and the constraints used for synthesis.  
+
+<img width="1271" height="852" alt="image" src="https://github.com/user-attachments/assets/0b9d0110-dcfb-4cd6-964a-b2c47ff9520d" />
+
+<img width="1193" height="806" alt="image" src="https://github.com/user-attachments/assets/1c010eef-03b2-4e38-bffd-cd8e6433fa5c" />
+
+## Synthesis To Bitstream
+
+During implementation, the synthesis design is traslated to a logic design file and mapped to small blocks and sub-blocks that can fit in FPGA CLBs. These blocks are then placed and routed in a optimized way.
+
+The snippet below shows a small part of the implemented design, the used LUTs, MUX and CLBs.
+
+<img width="1267" height="852" alt="image" src="https://github.com/user-attachments/assets/7dbc6659-6f11-4829-b6e7-fbbd909c9e73" />  
+
+The snippet below shows the timing summary for the RVMYTH implemented core.  
+<img width="999" height="260" alt="d3_rvmyth_impl_design_timing" src="https://github.com/user-attachments/assets/af210126-9980-4878-8138-2fd29f14ec89" />  
+The snippet below shows the Device Utilization summary for the RVMYTH implemented core.  
+<img width="1277" height="305" alt="d3_rvmyth_impl_design_utilization" src="https://github.com/user-attachments/assets/01d1d954-5f10-40a8-babd-69da4a449a3d" />  
+The snippet below shows the power analysis for the RVMYTH implemented core.  
+<img width="995" height="405" alt="d3_rvmyth_impl_design_power" src="https://github.com/user-attachments/assets/c8a27585-f980-4cfb-8a17-755e82497d5c" />  
+
+# Day 4 - Introduction To SOFA FPGA Fabric
+
+SOFA (Skywater Opensource FPGAs) are a series of open-source FPGA IPs designed using open-source Skywater 130nm PDKs and OpenFPGA framework.
+The FPGA IP design used in this repository is FPGA1212_QLSOFA_HD_PNR which has 50MHz of maximum operating speed, 1152 LUTs, 2304 Flip-flops, 1152 soft adders. The complete design is used over OpenFPGA framework and the various reports are generated.  
+
+## SOFA Counter Area  
+The snippet below shows the utilization of the counter in SOFA FPGA Fabric.  
+<img width="952" height="314" alt="d4_sofa_area" src="https://github.com/user-attachments/assets/5ecffb2d-f370-4de0-bc6a-747caf066b53" />  
+
+The snippet below shows the setup and hold timing summary the counter in SOFA FPGA Fabric.  
+<img width="1261" height="822" alt="image" src="https://github.com/user-attachments/assets/3964ff2a-2115-43a0-a4c8-f779c0900ad9" />  
+<img width="1352" height="817" alt="image" src="https://github.com/user-attachments/assets/466b7be6-a7ea-4410-9be1-4cc0ed16a709" />  
+
+## SOFA Counter Post Implementation  
+The snippet below shows the post implementation simulation of the counter in SOFA FPGA Fabric.  
+<img width="1285" height="798" alt="image" src="https://github.com/user-attachments/assets/eb2cfa6b-3ef7-4e08-8594-cd8f5927ffd7" />  
+
+## SOFA Counter Power  
+The snippet below shows the power analysis of the counter in SOFA FPGA Fabric.  
+
+<img width="846" height="260" alt="d4_sofa_power" src="https://github.com/user-attachments/assets/f4bbb491-83ad-4ba9-bcb4-2a837244d01a" />
+
+
+# Day 5 - RISCV Core on Custom SOFA Fabric  
+
+The RVMYTH discussed is now used along with the custom SOFA FPGA fabric. The design is then taken through the complete OpenFPGA framework and VTR flow. The various logs and reports generated as the outcome of the flow are mentioned in below sections.  
+
+## SOFA RVMYTH Timing  
+The snippets below shows the setup and hold timing reports generated for RVMYTH core on SOFA FPGA Fabric by the tool.  
+
+<img width="1287" height="836" alt="image" src="https://github.com/user-attachments/assets/248ad608-6e27-453a-83ad-27f512d9d824" />  
+<img width="1291" height="838" alt="image" src="https://github.com/user-attachments/assets/1ebc3186-f04c-428d-ab8c-1ae0f3eee2c5" />
+
+
+## SOFA RVMYTH Utilization  
+The snippets below shows the device utilization for RVMYTH core on SOFA FPGA Fabric by the tool.
+
+<img width="1100" height="329" alt="d5_area" src="https://github.com/user-attachments/assets/b1729908-6ecc-4d05-ae2f-248793a54ce8" />
+
+## SOFA RVMYTH Post Implementation
+The snippets below shows the post implementation simulations for RVMYTH core on SOFA FPGA Fabric by the tool.
+
+<img width="1258" height="795" alt="image" src="https://github.com/user-attachments/assets/ea08b41f-ba9b-4683-8129-af5a9f9e16c3" />
+
+
+
+
+
 
 
 
