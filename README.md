@@ -1,2 +1,137 @@
 # FPGA-Fabric-Design-Architecture-Workshop
-FPGA Fabric Design &amp; Architecture Workshop will help us in understanding how modern FPGAs are architected from the ground up. We will explore what goes inside the fabric—LUTs, MUXes, DFFs, connection boxes, and switchboxes and how these blocks come together to form a custom logic architecture
+FPGA Fabric Design & Architecture Workshop will help us in understanding how modern FPGAs are architected from the ground up. We will explore what goes inside the fabric—LUTs, MUXes, DFFs, connection boxes, and switchboxes and how these blocks come together to form a custom logic architecture
+
+# Introduction To FPGA
+
+FPGA (Field Programmable Gate Array) are intergated circuits which have a complex arrangement of configurable logic blocks (CLBs) and programmable interconnects.
+
+| FPGA | ASIC |
+|-------|-------|
+| Field Programmable Gate Array | Application Specific Integrated Circuit |
+| RTL to Bitstream | RTL to Layout |
+| Reconfigurable Circuit | Permanent Circuit |
+| Less energy efficient; requires more power for the same task compared to ASIC | More energy efficient |
+| Useful for prototyping or validating a design | Used for final product design after validation |
+
+# Day 1 - Exploring FPGA Basics and Vivado
+
+## FPGA Architecture
+
+The FPGA Architecture Generally consists of Configurable Logic Blocks,Programmable Interconnects ,I/O Cells annd Memory and DSP Block.
+
+<img width="1280" height="720" alt="fpga_arch" src="https://github.com/user-attachments/assets/f457938c-56af-4c5d-b50d-c76ddc8776b5" />
+
+## Configurable Logic Block
+
+Configurable Logic Block (CLB) is responsible for the combinational or sequential logic implementation.  
+CLB consists of :  
+Look-up Table (LUT) for Logic function implementation.  
+Carry and Control Logic for Arithmetic Operations.  
+Flip-flops and/or latches  
+
+## Basys FPGA Board  
+The FPGA used in this repository is Basys 3 Artix-7 FPGA. Below is the snippet of Basys3 FPGA board and some major elements on the board.  
+
+<img width="1101" height="679" alt="basys3_board" src="https://github.com/user-attachments/assets/5d99a88b-4064-4cf9-8ff8-20696869891e" />  
+
+| No | Description | No | Description |
+|----|-------------|----|-------------|
+| 01 | Power Good LED | 09 | Reset |
+| 02 | I/O | 10 | Jumper |
+| 03 | I/O | 11 | Interface |
+| 04 | Four 7-segment Display | 12 | VGA Connector |
+| 05 | Slide switches | 13 | USB Port |
+| 06 | LEDs | 14 | External Power |
+| 07 | Pushbuttons | 15 | Switch |
+| 08 | FPGA programming done LED | 16 | Jumper |  
+
+## Counter Example in Vivado  
+
+A 4-bit up counter is being used for exploring the Vivado tool and OpenFPGA. Below mentioned is the RTL for the counter modules that is being used
+
+```
+ `timescale 1ns / 1ps
+ //////////////////////////////////////////////////////////////////////////////////
+ // Description: 4 bit counter with source clock (100MHz) division.
+
+ module counter_clk_div(clk,rst,counter_out);
+     
+     input clk,rst;
+     reg div_clk;
+     reg [25:0] delay_count;
+     output reg [3:0] counter_out;
+
+     //////////clock division block////////////////////
+     always @(posedge clk) begin
+
+         if(rst) begin
+             delay_count<=26'd0;
+             div_clk <= 1'b0; //initialise div_clk
+         end
+         else
+             if(delay_count==26'd212) begin
+                 delay_count<=26'd0; //reset upon reaching the max value
+                 div_clk <= ~div_clk;  //generating a slow clock
+             end
+             else begin
+                 delay_count<=delay_count+1;
+             end
+         end
+     end
+
+     /////////////4 bit counter block///////////////////
+     always @(posedge div_clk) begin
+
+         if(rst) begin
+             counter_out<=4'b0000;
+         end
+         else begin
+             counter_out<= counter_out+1;
+         end
+     end
+
+ endmodule
+```
+## Counter Simulation and Elaboration  
+
+ ### Behavioural Simulation
+
+ <img width="1920" height="825" alt="d1_counter_div_sim" src="https://github.com/user-attachments/assets/ad4e47fc-65d6-4c49-b74c-66a2db32239a" />  
+
+ Elaboration binds modules to module instances, builds the model hierarchy, computes parameter values, resolves hierarchical names, establishes net connectivity, and prepares all of this for simulation.
+
+The snippet below is the schematic of the counter design after elaboration.  
+<img width="1920" height="780" alt="counter_div_elaborate_schematic" src="https://github.com/user-attachments/assets/45886fec-d510-462d-92e6-2e4d46764b33" />  
+
+In I/O planning, the ports for modules are assigned respective FPGA pins. The snippet below shows the details about I/O planning.  
+<img width="1113" height="780" alt="d1_counter_div_elaborate_io_planning" src="https://github.com/user-attachments/assets/62833bd8-8777-4742-a246-751f4438634c" />  
+
+## Counter Synthesis
+Synthesis is the process that converts RTL into a technologyspecific gate-level netlist, optimized for a set of pre-defined constraints.
+
+The below snippet show sthe schematic generated by the Vivado synthesis tool.  
+<img width="1249" height="257" alt="counter_div_synthesis_schematic" src="https://github.com/user-attachments/assets/24e51095-5e86-4946-87ef-64b97aba6bad" />  
+
+## Constraints
+Constraints in simple are the specifications of your design like timing specifications, ports declaration, input/output delays, etc.
+
+## Bitstream
+A bitstream is a binary sequence that comprises a sequence of bits. These are used in FPGA applications for programming purposes and to establish communication channels. FPGA bitstream is a file containing the programming data associated with your FPGA chip.
+
+## Counter Timing, Power and Area
+Implementation of a design also gives details like the timing summary, device utilization, power analysis, etc. The below snippets show the brief timing sumary, implementation and power analysis of the up-counter design.
+
+<img width="1009" height="299" alt="d1_counter_div_implementation_timing_summary" src="https://github.com/user-attachments/assets/d7ec2783-5867-4903-a5a7-c545b2e2b95f" />
+
+<img width="1004" height="382" alt="d1_counter_div_implementation_utilization" src="https://github.com/user-attachments/assets/19719ab8-9228-4eac-864c-647a34065ca4" />
+
+<img width="1048" height="447" alt="d1_counter_div_implementation_power" src="https://github.com/user-attachments/assets/eb641013-c73f-408b-9671-97faf9c52b3b" />
+
+
+## Introduction To VIO
+Virtual Input/Output (VIO) core is a customizable core that can both monitor and drive internal FPGA signals in real time. The number and width of the input and output ports are customizable in size to interface with the FPGA design.  
+
+
+
+
+
